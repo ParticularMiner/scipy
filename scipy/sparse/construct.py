@@ -667,7 +667,7 @@ def bmat(blocks, format=None, dtype=None):
                 if bcol_lengths[j] == 0:
                     bcol_lengths[j] = A.shape[1]
                 elif bcol_lengths[j] != A.shape[1]:
-                    msg = ('blocks[:,{j}] has incompatible row dimensions. '
+                    msg = ('blocks[:,{j}] has incompatible column dimensions. '
                            'Got blocks[{i},{j}].shape[1] == {got}, '
                            'expected {exp}.'.format(i=i, j=j,
                                                     exp=bcol_lengths[j],
