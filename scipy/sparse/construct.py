@@ -618,7 +618,7 @@ def bmat(blocks, format=None, dtype=None):
         if N > 1:
             A = _compressed_sparse_stack(
                     np.asarray([
-                            _compressed_sparse_hard_stack(blocks[b,:], 1)
+                            _compressed_sparse_hard_stack(blocks[b,:], 1, b)
                                                 for b in range(M)
                     ], dtype='object'),
                     0)
@@ -632,7 +632,7 @@ def bmat(blocks, format=None, dtype=None):
         if M > 1:
             A = _compressed_sparse_stack(
                     np.asarray([
-                            _compressed_sparse_hard_stack(blocks[:,b], 0)
+                            _compressed_sparse_hard_stack(blocks[:,b], 0, b)
                                                 for b in range(N)
                     ], dtype='object'),
                     1)

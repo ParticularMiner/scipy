@@ -12,6 +12,8 @@ from numpy import ones, array, asarray, empty
 
 from .common import Benchmark, safe_import
 
+from sklearn.feature_extraction.text import CountVectorizer
+
 with safe_import():
     from scipy import sparse
     from scipy.sparse import (csr_matrix, coo_matrix, dia_matrix, lil_matrix,
@@ -217,6 +219,28 @@ class BlockDiagSparseConstruction(Benchmark):
 
     def time_block_diag(self, num_matrices):
         sparse.block_diag(self.matrices)
+
+
+class CsrHstack(Benchmark):
+    param_names = ['num_rows']
+    params = [10000, 25000, 50000, 100000, 250000, 500000, 750000, 
+              1000000, 1250000, 1500000, 1750000, 2000000]
+
+    def setup(self, num_rows):
+        # init parameters
+        NCOLS_SPARSE = int(1e5) # approximate 
+        SPARSE_DENSITY = 2e-4
+        
+        # Sparse data creation. 
+        words_in_sentence = int(NCOLS_SPARSE*SPARSE_DENSITY)
+        corpus = np.random.choice(size=[num_rows, words_in_sentence],
+                                  a=NCOLS_SPARSE)
+        corpus = list((map(lambda x: ' '.join(x.astype(str)), corpus)))
+        vectorizer = CountVectorizer().fit(corpus) 
+        self.mat = vectorizer.transform(corpus).astype(np.float64)
+
+    def time_csr_hstack(self, num_rows):
+        sparse.hstack([self.mat, self.mat])
 
 
 class Conversion(Benchmark):

@@ -325,6 +325,14 @@ class TestConstructUtils:
                                       dtype=np.float32).indices.dtype, np.int32)
         assert_equal(construct.vstack([A.tocsr(),B.tocsr()],
                                       dtype=np.float32).indptr.dtype, np.int32)
+        assert_equal(construct.vstack([A.tocsc(),B.tocsc()]).todense(),
+                     expected)
+        assert_equal(construct.vstack([A.tocsc(),B.tocsc()], dtype=np.float32).dtype,
+                     np.float32)
+        assert_equal(construct.vstack([A.tocsc(),B.tocsc()],
+                                      dtype=np.float32).indices.dtype, np.int32)
+        assert_equal(construct.vstack([A.tocsc(),B.tocsc()],
+                                      dtype=np.float32).indptr.dtype, np.int32)
 
     def test_hstack(self):
 
@@ -339,6 +347,10 @@ class TestConstructUtils:
                      expected)
         assert_equal(construct.hstack([A.tocsc(),B.tocsc()], dtype=np.float32).dtype,
                      np.float32)
+        assert_equal(construct.hstack([A.tocsr(),B.tocsr()]).todense(),
+                     expected)
+        assert_equal(construct.hstack([A.tocsr(),B.tocsr()], dtype=np.float32).dtype,
+                     np.float32)
 
     def test_bmat(self):
 
@@ -351,16 +363,36 @@ class TestConstructUtils:
                            [3, 4, 6],
                            [0, 0, 7]])
         assert_equal(construct.bmat([[A,B],[None,C]]).todense(), expected)
+        E = csr_matrix((1,2), dtype='i')
+        assert_equal(construct.bmat([[A.tocsr(),B.tocsr()],
+                                     [E,C.tocsr()]]).todense(),
+                                     expected)
+        assert_equal(construct.bmat([[A.tocsc(),B.tocsc()],
+                                     [E.tocsc(),C.tocsc()]]).todense(),
+                                     expected)
 
         expected = matrix([[1, 2, 0],
                            [3, 4, 0],
                            [0, 0, 7]])
         assert_equal(construct.bmat([[A,None],[None,C]]).todense(), expected)
+        assert_equal(construct.bmat([[A.tocsr(),E.T.tocsr()],
+                                     [E,C.tocsr()]]).todense(),
+                                     expected)
+        assert_equal(construct.bmat([[A.tocsc(),E.T.tocsc()],
+                                     [E.tocsc(),C.tocsc()]]).todense(),
+                                     expected)
 
+        Z = csr_matrix((1,1), dtype='i')
         expected = matrix([[0, 5],
                            [0, 6],
                            [7, 0]])
         assert_equal(construct.bmat([[None,B],[C,None]]).todense(), expected)
+        assert_equal(construct.bmat([[E.T.csr(),B.csr()],
+                                     [C.csr(),Z]]).todense(),
+                                     expected)
+        assert_equal(construct.bmat([[E.T.csc(),B.csc()],
+                                     [C.csc(),Z.csc()]]).todense(),
+                                     expected)
 
         expected = matrix(np.empty((0,0)))
         assert_equal(construct.bmat([[None,None]]).todense(), expected)
