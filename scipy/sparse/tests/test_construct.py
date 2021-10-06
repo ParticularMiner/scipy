@@ -387,11 +387,11 @@ class TestConstructUtils:
                            [0, 6],
                            [7, 0]])
         assert_equal(construct.bmat([[None,B],[C,None]]).todense(), expected)
-        assert_equal(construct.bmat([[E.T.csr(),B.csr()],
-                                     [C.csr(),Z]]).todense(),
+        assert_equal(construct.bmat([[E.T.tocsr(),B.tocsr()],
+                                     [C.tocsr(),Z]]).todense(),
                                      expected)
-        assert_equal(construct.bmat([[E.T.csc(),B.csc()],
-                                     [C.csc(),Z.csc()]]).todense(),
+        assert_equal(construct.bmat([[E.T.tocsc(),B.tocsc()],
+                                     [C.tocsc(),Z.tocsc()]]).todense(),
                                      expected)
 
         expected = matrix(np.empty((0,0)))
